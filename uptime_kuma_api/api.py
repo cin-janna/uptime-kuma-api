@@ -1053,6 +1053,12 @@ class UptimeKumaApi(object):
             footerText: str = None,
             showPoweredBy: bool = True,
             showCertificateExpiry: bool = False,
+            autoRefreshInterval=None,
+            analyticsId=None,
+            analyticsType=None,
+            analyticsScriptUrl=None,
+            showOnlyLastHeartbeat=None,
+            rssTitle=None,
 
             icon: str = "/icon.svg",
             publicGroupList: list = None
@@ -1082,6 +1088,12 @@ class UptimeKumaApi(object):
             "customCSS": customCSS,
             "footerText": footerText,
             "showPoweredBy": showPoweredBy,
+            "autoRefreshInterval": autoRefreshInterval,
+            "analyticsId": analyticsId,
+            "analyticsScriptUrl": analyticsScriptUrl,
+            "analyticsType": analyticsType,
+            "showOnlyLastHeartbeat": showOnlyLastHeartbeat,
+            "rssTitle": rssTitle,
         }
         if parse_version(self.version) >= parse_version("1.23"):
             config.update({
@@ -2012,7 +2024,7 @@ class UptimeKumaApi(object):
 
         data = {
             **config,
-            "incident": r2["incident"],
+            "incident": r2.get("incident", []),
             "publicGroupList": r2["publicGroupList"],
             "maintenanceList": r2["maintenanceList"]
         }
@@ -2086,6 +2098,12 @@ class UptimeKumaApi(object):
         :param str, optional customCSS: Custom CSS, defaults to ""
         :param str, optional footerText: Custom Footer, defaults to None
         :param bool, optional showPoweredBy: Show Powered By, defaults to True
+        :param bool, optional autoRefreshInterval: default 300s
+        :param bool, optional analyticsId: Show analyticsId
+        :param bool, optional analyticsType: Show analyticsType
+        :param bool, optional rssTitle: Show rssTitle
+        :param bool, optional showOnlyLastHeartbeat: Show showOnlyLastHeartbeat
+        :param bool, optional analyticsScriptUrl: Show analyticsScriptUrl
         :param bool, optional showCertificateExpiry: Show Certificate Expiry, defaults to False
         :param str, optional icon: Icon, defaults to "/icon.svg"
         :param list, optional publicGroupList: Public Group List, defaults to None
@@ -2131,6 +2149,7 @@ class UptimeKumaApi(object):
         status_page.pop("incident")
         status_page.pop("maintenanceList")
         status_page.update(kwargs)
+        status_page.pop("autoRefreshInterval")
         data = self._build_status_page_data(**status_page)
         r = self._call('saveStatusPage', data)
 
