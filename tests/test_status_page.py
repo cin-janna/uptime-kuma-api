@@ -16,13 +16,14 @@ class TestStatusPage(UptimeKumaTestCase):
             "slug": slug,
             "title": "status page 1",
             "description": "description 1",
-            "theme": "light",
+            "theme": "auto",
             "published": True,
             "showTags": False,
             "domainNameList": [],
             "customCSS": "",
             "footerText": None,
             "showPoweredBy": False,
+            "showCertificateExpiry": True,
             "icon": "/icon.svg",
             "publicGroupList": [
                 {
@@ -35,7 +36,7 @@ class TestStatusPage(UptimeKumaTestCase):
                     ]
                 }
             ],
-            "googleAnalyticsId": ""
+            "analyticsId": ""
         }
 
         # add status page

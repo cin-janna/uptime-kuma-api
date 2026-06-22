@@ -1048,7 +1048,7 @@ class UptimeKumaApi(object):
             published: bool = True,
             showTags: bool = False,
             domainNameList: list = None,
-            googleAnalyticsId: str = None,
+            # googleAnalyticsId: str = None,
             customCSS: str = "",
             footerText: str = None,
             showPoweredBy: bool = True,
@@ -1084,7 +1084,8 @@ class UptimeKumaApi(object):
             "published": published,
             "showTags": showTags,
             "domainNameList": domainNameList,
-            "googleAnalyticsId": googleAnalyticsId,
+            # "get_status_page": googleAnalyticsId,
+            "analyticsId": analyticsId,
             "customCSS": customCSS,
             "footerText": footerText,
             "showPoweredBy": showPoweredBy,
@@ -1947,14 +1948,15 @@ class UptimeKumaApi(object):
                     'domainNameList': [],
                     'footerText': None,
                     'icon': '/icon.svg',
-                    'googleAnalyticsId': '',
+                    'analyticsId': '',
                     'id': 1,
                     'published': True,
                     'showPoweredBy': False,
                     'showTags': False,
                     'slug': 'slug1',
                     'theme': 'light',
-                    'title': 'status page 1'
+                    'title': 'status page 1',
+                    'showCertificateExpiry': 'showCertificateExpiry',
                 }
             ]
         """
@@ -1977,7 +1979,7 @@ class UptimeKumaApi(object):
                 'description': 'description 1',
                 'domainNameList': [],
                 'footerText': None,
-                'googleAnalyticsId': '',
+                'analyticsId': '',
                 'icon': '/icon.svg',
                 'id': 1,
                 'incident': {
@@ -2006,9 +2008,9 @@ class UptimeKumaApi(object):
                     }
                 ],
                 'published': True,
-                'showCertificateExpiry': False,
+                'showCertificateExpiry': True,
                 'showPoweredBy': False,
-                'showTags': False,
+                'showTags': True,
                 'slug': 'slug1',
                 'theme': 'light',
                 'title': 'status page 1'
@@ -2075,12 +2077,16 @@ class UptimeKumaApi(object):
             r = self._call('deleteStatusPage', slug)
 
             # uptime kuma does not send the status page list event when a status page is deleted
-            for status_page in self._event_data[Event.STATUS_PAGE_LIST].values():
-                if status_page["slug"] == slug:
-                    status_page_id = status_page["id"]
-                    del self._event_data[Event.STATUS_PAGE_LIST][str(status_page_id)]
-                    break
-
+            # for status_page in self._event_data[Event.STATUS_PAGE_LIST].values():
+            #     if status_page["slug"] == slug:
+            #         status_page_id = status_page["id"]
+            #         del self._event_data[Event.STATUS_PAGE_LIST][str(status_page_id)]
+            #         break
+            self._event_data[Event.STATUS_PAGE_LIST] = {
+                k: v
+                for k, v in self._event_data[Event.STATUS_PAGE_LIST].items()
+                if v["slug"] != slug
+            }
             return r
 
     def save_status_page(self, slug: str, **kwargs) -> dict:
